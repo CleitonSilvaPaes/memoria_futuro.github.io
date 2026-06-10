@@ -1,0 +1,156 @@
+/* CONFIGURAÇÕES GERAIS E CORES DO TEMA CORRETO (DARK TECH) */
+:root {
+    --bg-main: #090d16;
+    --bg-card: #111827;
+    --bg-accent: #020617;
+    --accent: #00ffcc;
+    --accent-blue: #0066ff;
+    --text-main: #f8fafc;
+    --text-muted: #94a3b8;
+    --border: #1f2937;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    background-color: var(--bg-main);
+    color: var(--text-main);
+    font-family: 'Urbanist', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow-x: hidden;
+}
+
+/* CONTEINER DA APRESENTAÇÃO */
+.presentation-deck {
+    width: 1280px; height: 720px;
+    background-color: #000;
+    border-radius: 12px; position: relative; overflow: hidden;
+    box-shadow: 0 25px 50px -12px rgba(0, 255, 204, 0.15);
+    border: 1px solid var(--border);
+}
+
+.presentation-deck::before {
+    content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 4px;
+    background: linear-gradient(90deg, var(--accent), var(--accent-blue)); z-index: 10;
+}
+
+/* NAVEGAÇÃO */
+.slide-nav {
+    position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%);
+    display: flex; align-items: center; gap: 20px;
+    background: rgba(17, 24, 39, 0.8); padding: 10px 25px;
+    border-radius: 30px; border: 1px solid var(--border); z-index: 100;
+}
+.nav-btn { background: none; border: none; color: var(--text-main); font-size: 20px; cursor: pointer; transition: 0.2s; }
+.nav-btn:hover { color: var(--accent); transform: scale(1.1); }
+.slide-indicator { font-family: 'Space Grotesk', sans-serif; color: var(--text-muted); font-size: 16px; }
+
+/* ESTRUTURA DOS SLIDES */
+.slide {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    padding: 60px 80px; opacity: 0; visibility: hidden;
+    transition: opacity 0.4s ease-in-out, transform 0.4s ease-in-out;
+    transform: scale(0.98); display: flex; flex-direction: column; z-index: 1;
+}
+.slide.active { opacity: 1; visibility: visible; transform: scale(1); z-index: 5; }
+
+/* TIPOGRAFIA */
+h1, h2, h3, h4 { font-family: 'Space Grotesk', sans-serif; font-weight: 700; margin: 0; }
+.highlight { color: var(--accent); }
+.slide-header { margin-bottom: 30px; }
+.slide-tag { font-size: 14px; text-transform: uppercase; letter-spacing: 2px; color: var(--accent); font-weight: 600; margin-bottom: 5px; display: block; }
+.slide-title { font-size: 42px; color: var(--text-main); }
+p, li { font-size: 18px; line-height: 1.5; color: var(--text-muted); }
+ul { list-style: none; }
+ul li { margin-bottom: 12px; position: relative; padding-left: 25px; }
+ul li::before { content: '➔'; position: absolute; left: 0; color: var(--accent); }
+
+.reference-text { margin-bottom: 12px; position: relative; padding-left: 25px; }
+.reference-link { color: var(--accent); text-decoration: none; }
+
+/* LAYOUTS */
+.two-column { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: center; flex-grow: 1; }
+.grid-cards { display: grid; gap: 20px; width: 100%; }
+.card { background-color: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 22px; display: flex; flex-direction: column; gap: 10px; }
+.card i { font-size: 28px; color: var(--accent); }
+
+/* WIDGETS INTERATIVOS GERAIS */
+.interactive-widget {
+    background-color: var(--bg-accent); border: 1px solid var(--border);
+    border-radius: 14px; padding: 24px; display: flex; flex-direction: column; width: 100%;
+}
+.widget-controls { display: flex; gap: 12px; margin-bottom: 15px; }
+.control-btn {
+    background-color: var(--bg-card); color: var(--text-main); border: 1px solid var(--border);
+    padding: 10px 18px; border-radius: 8px; cursor: pointer; font-family: 'Space Grotesk', sans-serif; font-weight: 600; transition: 0.2s;
+}
+.control-btn.active { background-color: var(--accent); color: #000; border-color: var(--accent); }
+
+/* 1. COMPONENTE: PIRÂMIDE (HIERARQUIA) */
+.pyramid-wrapper { display: flex; flex-direction: column; align-items: center; gap: 5px; width: 100%; }
+.pyramid-level { background: #1e293b; border: 1px solid var(--accent); text-align: center; padding: 10px; font-size: 14px; font-weight: bold; border-radius: 4px; }
+.pyramid-level.l1 { width: 40%; background: linear-gradient(90deg, #ff4d4d, #ff7675); color: #000; border: none; }
+.pyramid-level.l2 { width: 60%; background: #fdcb6e; color: #000; border: none;}
+.pyramid-level.ram { width: 80%; background: #74b9ff; color: #000; border: none;}
+.pyramid-level.storage { width: 100%; background: #00b894; color: #000; border: none;}
+
+/* 2. COMPONENTE: DDR SIMULATOR */
+.ddr-sim { display: flex; flex-direction: column; gap: 20px; width: 100%; }
+.ddr-side { background: #111; padding: 15px; border-radius: 8px; border: 1px dashed var(--border); }
+.ddr-side p { margin-bottom: 10px; font-size: 14px; text-align: center; color: var(--text-main); }
+.ddr-channel { width: 100%; height: 20px; background: #222; border-radius: 10px; position: relative; overflow: hidden; margin-bottom: 10px; }
+.ddr-data { position: absolute; height: 100%; width: 40px; background: #ef4444; left: -40px; animation: moveData 3s linear infinite; }
+.ddr-data.fast { background: var(--accent); animation: moveData 1.5s linear infinite; width: 20px; }
+.ddr-data.delay { animation-delay: 0.75s; }
+@keyframes moveData { to { left: 100%; } }
+
+/* 3. COMPONENTE: UNIFIED MEMORY SIMULATOR */
+.unified-sim { display: flex; flex-direction: column; gap: 30px; width: 100%; }
+.flex-box { display: flex; align-items: center; justify-content: space-between; width: 100%; }
+.box { background: #1e293b; padding: 10px; text-align: center; border-radius: 6px; font-weight: bold; font-size: 14px; border: 1px solid var(--border); }
+.box.cpu { border-color: #3b82f6; color: #3b82f6; }
+.box.gpu { border-color: #10b981; color: #10b981; }
+.arrow-move { font-size: 12px; color: #ef4444; font-weight: bold; animation: pulse 1s infinite; }
+.pool { background: rgba(0, 255, 204, 0.1); border: 1px solid var(--accent); padding: 15px; border-radius: 8px; text-align: center; font-weight: bold; color: var(--accent); }
+@keyframes pulse { 0% { opacity: 0.5; } 50% { opacity: 1; } 100% { opacity: 0.5; } }
+
+/* 4. COMPONENTE: DATABASE THROUGHPUT (NVMe) */
+#throughput-canvas { flex-grow: 1; background-color: #020205; border-radius: 8px; border: 1px solid rgba(255,255,255,0.03); position: relative; overflow: hidden; min-height: 180px; }
+.sim-lane { width: 100%; border-bottom: 1px solid rgba(255,255,255,0.02); position: relative; }
+.data-packet { position: absolute; height: 4px; width: 20px; background-color: var(--accent); border-radius: 2px; top: 50%; transform: translateY(-50%); box-shadow: 0 0 8px var(--accent); }
+.data-packet.sata-packet { background-color: #ef4444; box-shadow: 0 0 8px #ef4444; }
+.widget-metrics { display: flex; justify-content: space-between; padding: 15px; border-top: 1px solid var(--border); margin-top: 10px; }
+.metric-item { text-align: center; }
+.metric-label { font-size: 12px; text-transform: uppercase; color: var(--text-muted); }
+.metric-value { font-family: 'Space Grotesk', sans-serif; font-size: 24px; font-weight: 700; }
+
+/* 5. COMPONENTE: BAR CHART */
+.bar-chart-container { display: flex; flex-direction: column; gap: 16px; justify-content: center; height: 100%; margin-top: 20px; }
+.chart-row { display: flex; align-items: center; gap: 15px; }
+.chart-label { width: 120px; font-weight: 600; font-size: 14px; text-align: right; }
+.chart-track { flex-grow: 1; background-color: var(--bg-accent); height: 32px; border-radius: 6px; overflow: hidden; border: 1px solid var(--border); }
+.chart-fill { height: 100%; background: linear-gradient(90deg, var(--accent-blue), var(--accent)); width: 0%; transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1); display: flex; align-items: center; padding-left: 15px; font-weight: 700; font-size: 13px; color: #000; }
+
+/* TABELAS */
+.table-wrapper { width: 100%; border-radius: 10px; border: 1px solid var(--border); background-color: var(--bg-card); margin-top: 10px; overflow: hidden; }
+table { width: 100%; border-collapse: collapse; text-align: left; }
+th { background-color: var(--accent); color: #000; font-size: 16px; padding: 16px 20px; text-transform: uppercase; }
+td { padding: 14px 20px; border-bottom: 1px solid var(--border); font-size: 16px; color: #e2e8f0; }
+
+/* SLIDE CAPA / ENCERRAMENTO */
+.slide-cover { align-items: center; justify-content: center; text-align: center; }
+.slide-cover h1 { font-size: 68px; margin-bottom: 20px; }
+.slide-cover p.subtitle { font-size: 24px; color: var(--accent); }
+
+/* MOCKUPS TÉCNICOS (NAND, HBM) */
+.tech-box-mock { width: 100%; height: 100%; border-radius: 12px; border: 1px dashed rgba(0, 255, 204, 0.3); display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0,0,0,0.4); }
+.nand-layers { display: flex; flex-direction: column-reverse; gap: 3px; width: 120px; height: 200px; margin-bottom: 15px; }
+.nand-layer { height: 12px; background: linear-gradient(90deg, #1e3a8a, #3b82f6); border-radius: 2px; }
+.nand-layer.active-layer { background: linear-gradient(90deg, #0f766e, var(--accent)); }
+.hbm-stack-mock { display: flex; flex-direction: column-reverse; align-items: center; gap: 6px; }
+.hbm-die { width: 180px; height: 25px; background-color: #1e293b; border: 1px solid var(--accent-blue); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: bold; border-radius: 4px; }
+.hbm-base { width: 240px; height: 16px; background-color: #334155; margin-top: 5px; display: flex; align-items: center; justify-content: center; font-size: 10px;}
+.gpu-die { width: 160px; height: 50px; background-color: #881337; border: 1px solid #f43f5e; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-weight: bold; }

@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Memórias do Futuro: NVMe, HBM, 3D NAND e NVM Emergentes</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=Urbanist:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <div class="presentation-deck" id="presentation-deck">
+        
+        <div class="slide-nav">
+            <button class="nav-btn" onclick="navigateSlide(-1)"><i class="fa-solid fa-chevron-left"></i></button>
+            <div class="slide-indicator" id="slide-num">1 / 15</div>
+            <button class="nav-btn" onclick="navigateSlide(1)"><i class="fa-solid fa-chevron-right"></i></button>
+        </div>
+
+        <div class="slide slide-cover active">
+            <h1>Memórias do <span class="highlight">Futuro</span></h1>
+            <p class="subtitle">NVMe, HBM, 3D NAND, DDR5 e Memória Unificada</p>
+            <p style="margin-top: 40px; font-size: 16px; opacity: 0.5;">Arquiteturas Avançadas de Dados • Apresentação Executiva</p>
+        </div>
+
+        <div class="slide">
+            <div class="slide-header">
+                <span class="slide-tag">Fundamentos da Arquitetura</span>
+                <h2 class="slide-title">Revisão da <span class="highlight">Hierarquia</span> de Memória</h2>
+            </div>
+            <div class="two-column">
+                <div>
+                    <p>A arquitetura clássica organiza a memória com base na regra de ouro: <strong>quanto mais próximo da CPU, mais rápido, mais caro e menor a capacidade.</strong></p>
+                    <ul style="margin-top: 20px;">
+                        <li><strong>Registradores & L1/L2/L3 (SRAM):</strong> Embutidos no chip. Latência na escala de poucos ciclos de clock.</li>
+                        <li><strong>Memória Principal (DRAM):</strong> A "mesa de trabalho" volátil (Gigabytes). Latência em nanosegundos.</li>
+                        <li><strong>Armazenamento (Flash/HDD):</strong> Não volátil, capacidade massiva (Terabytes), mas com latência em microssegundos/milissegundos.</li>
+                    </ul>
+                </div>
+                <div class="interactive-widget" style="align-items: center; justify-content: center;">
+                    <div class="pyramid-wrapper">
+                        <div class="pyramid-level l1">Registradores / L1 (Mais Rápido / Menor)</div>
+                        <div class="pyramid-level l2">Cache L2 / L3 (SRAM)</div>
+                        <div class="pyramid-level ram">Memória Principal (DRAM)</div>
+                        <div class="pyramid-level storage">Armazenamento NVMe / SSD / HDD (Mais Lento / Maior)</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <div class="slide-header">
+                <span class="slide-tag">Evolução da Memória Principal</span>
+                <h2 class="slide-title">DRAM Moderna: <span class="highlight">DDR5 vs DDR4</span></h2>
+            </div>
+            <div class="two-column">
+                <div>
+                    <p>A transição para o DDR5 não foi apenas um aumento de clock, mas uma reformulação estrutural profunda para alimentar processadores mult-core.</p>
+                    <ul>
+                        <li><strong>Arquitetura de Canal:</strong> O DDR4 usava 1 canal de 64 bits por pente. O DDR5 divide o pente em <strong>2 canais independentes de 32 bits</strong>, dobrando a eficiência de acesso concorrente.</li>
+                        <li><strong>On-Die ECC:</strong> Com a miniaturização agressiva, o DDR5 integra correção de erros de bit único direto no chip, mesmo em memórias não-servidor.</li>
+                        <li><strong>PMIC Integrado:</strong> A regulação de tensão (1.1V) foi movida da placa-mãe para o próprio módulo.</li>
+                    </ul>
+                </div>
+                <div class="interactive-widget">
+                    <h4 style="text-align: center; margin-bottom: 20px; color: var(--accent);">Simulador de Acesso a Canais</h4>
+                    <div class="ddr-sim">
+                        <div class="ddr-side">
+                            <p>DDR4 (1x 64-bit)</p>
+                            <div class="ddr-channel" id="ddr4-chan">
+                                <div class="ddr-data"></div>
+                            </div>
+                        </div>
+                        <div class="ddr-side">
+                            <p>DDR5 (2x 32-bit independentes)</p>
+                            <div class="ddr-channel split" id="ddr5-chan1">
+                                <div class="ddr-data fast"></div>
+                            </div>
+                            <div class="ddr-channel split" id="ddr5-chan2">
+                                <div class="ddr-data fast delay"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <div class="slide-header">
+                <span class="slide-tag">O Problema Atual</span>
+                <h2 class="slide-title">O "Muro da <span class="highlight">Memória</span>"</h2>
+            </div>
+            <div class="two-column">
+                <div>
+                    <p style="font-size: 20px; margin-bottom: 20px;">A velocidade das CPUs/GPUs evoluiu exponencialmente, mas as conexões tradicionais não acompanharam:</p>
+                    <ul>
+                        <li><strong>Latência Crítica de I/O:</strong> CPUs modernas perdem ciclos esperando barramentos lentos.</li>
+                        <li><strong>Fome de Banda Larga:</strong> IA e Big Data exigem tráfego na casa dos Terabytes por segundo.</li>
+                        <li><strong>Impacto em Software:</strong> Força o uso de estratégias complexas como <i>Data-Oriented Design</i> para manter o dado fluindo no cache.</li>
+                    </ul>
+                </div>
+                <div class="card" style="padding: 30px; height: auto;">
+                    <i class="fa-solid fa-triangle-exclamation" style="color: #ef4444;"></i>
+                    <h3>O Desafio Energético</h3>
+                    <p style="font-size: 16px;">Hoje, mover os dados da memória até o processador pela placa-mãe consome mais energia e tempo do que o cálculo matemático em si.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <div class="slide-header">
+                <span class="slide-tag">Armazenamento Flash</span>
+                <h2 class="slide-title">3D NAND: <span class="highlight">Verticalização</span> e Células</h2>
+            </div>
+            <div class="two-column">
+                <div>
+                    <p>A litografia planar (2D) esbarrou no limite do isolamento eletrônico. A solução foi o 3D NAND.</p>
+                    <ul>
+                        <li><strong>Células Charge Trap:</strong> Isolamento superior ao antigo Floating Gate.</li>
+                        <li><strong>Densidade por Célula:</strong>
+                            <br>• <strong>SLC (1 bit):</strong> Rápido/Durável.
+                            <br>• <strong>TLC (3 bits):</strong> Padrão atual.
+                            <br>• <strong>QLC/PLC (4 a 5 bits):</strong> Alta capacidade, mas menor durabilidade (TBW) devido à dificuldade de ler 16 a 32 estados de tensão.
+                        </li>
+                    </ul>
+                </div>
+                <div class="tech-box-mock">
+                    <div class="nand-layers">
+                        <div class="nand-layer"></div>
+                        <div class="nand-layer"></div>
+                        <div class="nand-layer active-layer"></div>
+                        <div class="nand-layer active-layer"></div>
+                        <div class="nand-layer"></div>
+                        <div class="nand-layer"></div>
+                    </div>
+                    <p style="font-size: 13px; text-align: center; color: var(--text-muted);">Empilhamento vertical 3D</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <div class="slide-header">
+                <span class="slide-tag">Interfaces de Comunicação</span>
+                <h2 class="slide-title">NVMe: Paralelismo <span class="highlight">Massivo</span></h2>
+            </div>
+            <div class="two-column">
+                <div>
+                    <p>O <strong>NVMe</strong> abandona a herança mecânica do protocolo SATA/AHCI para se acoplar diretamente às vias do PCIe.</p>
+                    <ul>
+                        <li><strong>SATA/SAS:</strong> Feito para discos rotativos. 1 única fila com 32 comandos.</li>
+                        <li><strong>NVMe PCIe:</strong> Até <strong>64.000 filas paralelas</strong>, com 64.000 comandos cada.</li>
+                        <li><strong>Gen4 vs Gen5:</strong> A largura de banda teórica saltou de ~7.500 MB/s (Gen4) para mais de 14.000 MB/s (Gen5).</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h4 style="color: var(--accent);"><i class="fa-solid fa-database"></i> Impacto em Banco de Dados</h4>
+                    <p style="font-size: 16px;">O NVMe transforma a latência de milissegundos para microssegundos. Operações aleatórias atingem milhões de IOPS, otimizando consultas SQL críticas.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <div class="slide-header">
+                <span class="slide-tag">Simulação Visual</span>
+                <h2 class="slide-title">Database <span class="highlight">Throughput</span> Simulator</h2>
+            </div>
+            <div class="interactive-widget" style="height: 450px;">
+                <div class="widget-controls">
+                    <button class="control-btn active" id="btn-sata" onclick="toggleSimMode('sata')">SATA Protocol (AHCI)</button>
+                    <button class="control-btn" id="btn-nvme" onclick="toggleSimMode('nvme')">NVMe Protocol (PCIe Gen5)</button>
+                </div>
+                <div id="throughput-canvas"></div>
+                <div class="widget-metrics">
+                    <div class="metric-item">
+                        <div class="metric-label">Capacidade de Filas</div>
+                        <div class="metric-value" id="m-queues">1 Fila Única</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-label">Taxa de Operações</div>
+                        <div class="metric-value" id="m-iops" style="color: #ef4444;">~80.000 IOPS</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <div class="slide-header">
+                <span class="slide-tag">Aceleração de Hardware / IA</span>
+                <h2 class="slide-title">HBM: Integração <span class="highlight">On-Package</span></h2>
+            </div>
+            <div class="two-column">
+                <div>
+                    <p>O <strong>HBM3/HBM3E</strong> resolve a lentidão de transferência fundindo computação e memória no mesmo encapsulamento.</p>
+                    <ul>
+                        <li><strong>Empilhamento 3D via TSV:</strong> Chips DRAM perfurados por micro-fios de silício.</li>
+                        <li><strong>Interposer:</strong> A pilha não liga na placa-mãe, mas em uma base de silício ligada diretamente à GPU.</li>
+                        <li><strong>Banda Massiva:</strong> Ultrapassa 1.2 TB/s por pilha, essencial para treinamento de IA (LLMs) que são limitados por memória (*Memory-Bound*).</li>
+                    </ul>
+                </div>
+                <div class="tech-box-mock">
+                    <div class="hbm-stack-mock">
+                        <div class="hbm-base">Interposer</div>
+                        <div class="hbm-die">DRAM Core Die (Empilhado)</div>
+                        <div class="hbm-die">DRAM Core Die (Empilhado)</div>
+                    </div>
+                    <div style="display: flex; align-items: center; margin-top: 15px;">
+                        <div class="gpu-die">GPU / TPU (Ex: AMD MI300X)</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <div class="slide-header">
+                <span class="slide-tag">Paradigma Unificado</span>
+                <h2 class="slide-title">Memória <span class="highlight">Unificada</span> (Unified Memory)</h2>
+            </div>
+            <div class="two-column">
+                <div>
+                    <p>Tradicionalmente, a CPU usa RAM e a GPU usa VRAM. Mover dados entre elas via PCIe consome tempo e energia (cópia redundante).</p>
+                    <ul>
+                        <li><strong>Apple M-Series (SoC):</strong> CPU, GPU e NPU acessam fisicamente o <strong>mesmo pool</strong> de memória simultaneamente. Zero cópias de dados.</li>
+                        <li><strong>NVIDIA Grace Hopper (GH200):</strong> Em datacenters, une a CPU e GPU via barramento NVLink-C2C. A GPU acessa os 480GB de memória da CPU a incríveis 900 GB/s.</li>
+                    </ul>
+                </div>
+                <div class="interactive-widget">
+                    <h4 style="text-align: center; margin-bottom: 20px;">Tráfego de Dados</h4>
+                    <div class="unified-sim">
+                        <div id="sim-trad">
+                            <span style="font-size: 12px; color: #ef4444;">Tradicional (Gargalo PCIe)</span>
+                            <div class="flex-box">
+                                <div class="box cpu">CPU RAM</div>
+                                <div class="arrow-move">→ Copiando... →</div>
+                                <div class="box gpu">GPU VRAM</div>
+                            </div>
+                        </div>
+                        <div id="sim-uni">
+                            <span style="font-size: 12px; color: var(--accent);">Unified Memory</span>
+                            <div class="pool">
+                                Pool de Memória Único
+                                <div class="flex-box" style="margin-top: 10px;">
+                                    <div class="box cpu" style="width: 40%">CPU Core</div>
+                                    <div class="box gpu" style="width: 40%">GPU Core</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <div class="slide-header">
+                <span class="slide-tag">Memórias Disruptivas</span>
+                <h2 class="slide-title">A Busca pela <span class="highlight">Memória Universal</span></h2>
+            </div>
+            <div class="content-area">
+                <p>O objetivo é unir a velocidade da DRAM com a persistência do armazenamento (não volátil).</p>
+                <div class="grid-cards" style="grid-template-columns: repeat(2, 1fr);">
+                    <div class="card">
+                        <i class="fa-solid fa-clock-rotate-left"></i>
+                        <h3>Intel Optane (Legado)</h3>
+                        <p style="font-size: 14px;">Usava 3D XPoint (PCM). Latência quase nula e altíssimo IOPS QD1. Descontinuada por custos, mas provou o conceito de persistência de alta performance.</p>
+                    </div>
+                    <div class="card">
+                        <i class="fa-solid fa-magnet"></i>
+                        <h3>MRAM (Magnetoresistive)</h3>
+                        <p style="font-size: 14px;">Grava dados por polaridade magnética. Imune a radiação, velocidade de SRAM. Foco em IoT e setor aeroespacial.</p>
+                    </div>
+                    <div class="card">
+                        <i class="fa-solid fa-bolt-lightning"></i>
+                        <h3>ReRAM (Resistive)</h3>
+                        <p style="font-size: 14px;">Altera resistência elétrica criando filamentos. Ideal para computação neuromórfica (redes neurais em hardware).</p>
+                    </div>
+                    <div class="card">
+                        <i class="fa-solid fa-flask"></i>
+                        <h3>PCM (Phase Change)</h3>
+                        <p style="font-size: 14px;">Muda estado físico do vidro (amorfo para cristalino). Alta densidade entre RAM e SSD.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <div class="slide-header">
+                <span class="slide-tag">Análise Prática</span>
+                <h2 class="slide-title">Estratégias de <span class="highlight">Benchmarks</span></h2>
+            </div>
+            <div class="two-column">
+                <div>
+                    <p>Como medir o impacto dessas tecnologias em sistemas reais?</p>
+                    <ul>
+                        <li><strong>AIDA64:</strong> Estressa a memória RAM e cache. Crucial para medir <strong>Latência (ns)</strong> e taxas puras de Leitura/Escrita (GB/s).</li>
+                        <li><strong>CrystalDiskMark:</strong> Validação de armazenamento. O abismo real de performance aparece nos testes aleatórios (ex: blocos 4K), vitais para bancos de dados.</li>
+                    </ul>
+                </div>
+                <div class="card" style="border-left: 4px solid var(--accent);">
+                    <h3 style="color: var(--accent);">Estudo de Caso em Servidores</h3>
+                    <p style="font-size: 16px;">Em IA (como Llama 3), servidores sem HBM levam minutos para gerar respostas, enquanto clusters HBM3E geram tokens em tempo real. Em infraestruturas SQL, o NVMe Gen5 permite milhares de transações financeiras simultâneas eliminando filas de I/O.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <div class="slide-header">
+                <span class="slide-tag">Comparativo Quantitativo</span>
+                <h2 class="slide-title">Gráfico de <span class="highlight">Arquitetura</span> de Memória</h2>
+            </div>
+            <div class="content-area">
+                <div class="interactive-widget" style="height: 350px;">
+                    <div class="widget-controls">
+                        <button class="control-btn active" id="btn-metric-bw" onclick="toggleMetricMode('bw')">Banda Larga (TB/s) - Maior é Melhor</button>
+                        <button class="control-btn" id="btn-metric-lat" onclick="toggleMetricMode('lat')">Latência (ns) - Menor é Melhor</button>
+                    </div>
+                    <div class="bar-chart-container">
+                        <div class="chart-row">
+                            <div class="chart-label">3D NAND</div>
+                            <div class="chart-track"><div class="chart-fill" id="bar-nand"></div></div>
+                        </div>
+                        <div class="chart-row">
+                            <div class="chart-label">NVMe Gen5</div>
+                            <div class="chart-track"><div class="chart-fill" id="bar-nvme"></div></div>
+                        </div>
+                        <div class="chart-row">
+                            <div class="chart-label">DDR5 RAM</div>
+                            <div class="chart-track"><div class="chart-fill" id="bar-ddr5"></div></div>
+                        </div>
+                        <div class="chart-row">
+                            <div class="chart-label">HBM3E</div>
+                            <div class="chart-track"><div class="chart-fill" id="bar-hbm" style="background: linear-gradient(90deg, var(--accent-blue), #bc4fff);"></div></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <div class="slide-header">
+                <span class="slide-tag">Resumo do Módulo</span>
+                <h2 class="slide-title">Matriz Geral de <span class="highlight">Especificações</span></h2>
+            </div>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Tecnologia</th>
+                            <th>Velocidade/Banda</th>
+                            <th>Latência</th>
+                            <th>Retenção</th>
+                            <th>Foco Principal</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>3D NAND Flash</strong></td>
+                            <td>~1.5 a 14 GB/s</td>
+                            <td>Microssegundos</td>
+                            <td style="color: var(--accent);">Sim</td>
+                            <td>Armazenamento em massa (TLC/QLC)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>DDR5 (DRAM)</strong></td>
+                            <td>~64 a 80+ GB/s</td>
+                            <td>Nanosegundos</td>
+                            <td style="color: #ef4444;">Não</td>
+                            <td>Memória Principal do S.O.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>HBM3 / HBM3E</strong></td>
+                            <td>1.2+ TB/s (Pilha)</td>
+                            <td>Nanosegundos</td>
+                            <td style="color: #ef4444;">Não</td>
+                            <td>Aceleração GPU / Treinamento de IA</td>
+                        </tr>
+                        <tr>
+                            <td><strong>MRAM / ReRAM</strong></td>
+                            <td>Velocidade RAM</td>
+                            <td>&lt; 20 Nanosegundos</td>
+                            <td style="color: var(--accent);">Sim</td>
+                            <td>Memória Universal, Neuromórfica</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="slide">
+            <div class="slide-header">
+                <span class="slide-tag">Fontes de Pesquisa</span>
+                <h2 class="slide-title">Referências <span class="highlight">Bibliográficas</span></h2>
+            </div>
+            <div class="content-area">
+                <ul style="font-size: 16px; line-height: 1.8; margin-top: 15px; list-style: none; padding-left: 0;">
+                    <li class="reference-text">
+                        <strong>[1]</strong> WULF, W. A.; MCKEE, S. A. <i>Hitting the Memory Wall: Implications of the Obvious.</i> University of Virginia. Disponível em: <a href="https://www.cs.virginia.edu/~wulf/publications/pdfs/memory-wall.pdf" target="_blank" class="reference-link">https://www.cs.virginia.edu/~wulf/publications/pdfs/memory-wall.pdf</a>
+                    </li>
+                    <li class="reference-text">
+                        <strong>[2]</strong> JEDEC. <i>DDR5 SDRAM Standard (JESD79-5) & HBM Standard (JESD235).</i> Especificações Oficiais do Consórcio JEDEC. Disponível em: <a href="https://www.jedec.org" target="_blank" class="reference-link">https://www.jedec.org</a>
+                    </li>
+                    <li class="reference-text">
+                        <strong>[3]</strong> ANANDTECH. <i>Understanding NVMe: PCIe Storage Deep Dive.</i> Análises de Protocolos e Filas de I/O. Disponível em: <a href="https://www.anandtech.com" target="_blank" class="reference-link">https://www.anandtech.com</a>
+                    </li>
+                    <li class="reference-text">
+                        <strong>[4]</strong> TOM'S HARDWARE. <i>Next-Gen Storage: PCIe 5.0 SSDs Benchmarks.</i> Testes Práticos com CrystalDiskMark. Disponível em: <a href="https://www.tomshardware.com" target="_blank" class="reference-link">https://www.tomshardware.com</a>
+                    </li>
+                    <li class="reference-text">
+                        <strong>[5]</strong> NVIDIA. <i>NVIDIA Grace Hopper Superchip Architecture Whitepaper.</i> Coerência de Memória Unificada via NVLink-C2C. Disponível em: <a href="https://images.nvidia.com" target="_blank" class="reference-link">https://images.nvidia.com</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="slide slide-cover">
+            <h1>Arquitetura <span class="highlight">Sem Gargalos</span></h1>
+            <p class="subtitle">"Otimizar a computação hoje não é mais focar apenas na frequência da CPU, mas sim gerenciar o fluxo massivo e eficiente dos dados."</p>
+            <p style="margin-top: 50px; font-size: 14px; opacity: 0.4;">Fim da Apresentação • Obrigado pela atenção</p>
+        </div>
+
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
