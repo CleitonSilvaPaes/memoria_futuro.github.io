@@ -14,17 +14,29 @@ function navigateSlide(direction) {
     
     // Adiciona a classe ao novo slide
     allSlides[activeSlideIndex].classList.add('active');
-    slideNumIndicator.innerText = `${activeSlideIndex + 1} / ${allSlides.length}`;
+    if (slideNumIndicator) {
+        slideNumIndicator.innerText = `${activeSlideIndex + 1} / ${allSlides.length}`;
+    }
 
-    // Disparar animações baseadas no slide atual
-    // Slide 7: Simulador NVMe vs SATA
+    // =======================================================
+    // DISPARADORES DE ANIMAÇÃO (CORRIGIDOS PARA 15 SLIDES)
+    // =======================================================
+    
+    // Slide 7 (Índice 6): Simulador NVMe vs SATA
     if (activeSlideIndex === 6) {
         initializeThroughputSimulator();
     } else {
         clearThroughputSimulator();
     }
 
-    // Slide 12: Gráfico de Barras
+    // Slide 8 (Índice 7): Simulador 3D do HBM Elevador TSV
+    if (activeSlideIndex === 7) {
+        startHbmElevatorAnimation();
+    } else {
+        stopHbmElevatorAnimation();
+    }
+
+    // Slide 12 (Índice 11): Gráfico de Barras de Arquitetura
     if (activeSlideIndex === 11) {
         triggerChartAnimation();
     }
@@ -63,18 +75,18 @@ function initializeThroughputSimulator() {
     const mQueues = document.getElementById('m-queues');
     const mIops = document.getElementById('m-iops');
 
-    let totalLanes = activeProtocol === 'sata' ? 1 : 10;
+    let totalLanes = activeProtocol === 'sata' ? 1 : 12;
 
     // Atualiza Texto
     if (activeProtocol === 'sata') {
-        mQueues.innerText = "1 Fila Única (AHCI)";
-        mIops.innerText = "~80.000 IOPS";
-        mIops.style.color = "#ef4444";
+        if(mQueues) mQueues.innerText = "1 Fila Única (AHCI)";
+        if(mIops) { mIops.innerText = "~80.000 IOPS"; mIops.style.color = "#ef4444"; }
     } else {
-        mQueues.innerText = "64.000 Filas Paralelas (PCIe)";
-        mIops.innerText = "1.500.000+ IOPS";
-        mIops.style.color = "var(--accent)";
+        if(mQueues) mQueues.innerText = "64.000 Filas Paralelas";
+        if(mIops) { mIops.innerText = "1.500.000+ IOPS"; mIops.style.color = "var(--accent)"; }
     }
+
+    if(!canvasContainer) return;
 
     const laneHeight = canvasContainer.clientHeight / totalLanes;
     const elementsLanesRefs = [];
@@ -87,10 +99,13 @@ function initializeThroughputSimulator() {
         elementsLanesRefs.push(divLane);
     }
 
-    let spawnProbability = activeProtocol === 'sata' ? 0.5 : 0.3;
-    let packetSpeed = activeProtocol === 'sata' ? 3 : 12;
+    let spawnProbability = activeProtocol === 'sata' ? 0.4 : 0.25;
+    let packetSpeed = activeProtocol === 'sata' ? 3 : 14;
 
     simulationInterval = setInterval(() => {
+        // Pausa se não estiver no Slide 7 (Índice 6)
+        if (activeSlideIndex !== 6) return; 
+
         elementsLanesRefs.forEach(laneElement => {
             if (Math.random() < spawnProbability) {
                 const packetElement = document.createElement('div');
@@ -103,7 +118,7 @@ function initializeThroughputSimulator() {
                     currentX += packetSpeed;
                     packetElement.style.left = `${currentX}px`;
 
-                    if (currentX < canvasContainer.clientWidth - 20) {
+                    if (currentX < canvasContainer.clientWidth - 30) {
                         let frameId = requestAnimationFrame(step);
                         animationFrames.push(frameId);
                     } else {
@@ -115,23 +130,23 @@ function initializeThroughputSimulator() {
                 step();
             }
         });
-    }, 100);
+    }, 120);
 }
 
 
-// --- 3. LÓGICA DO CHART (COMPARAÇÃO DE ARQUITETURas) ---
+// --- 3. LÓGICA DO CHART (COMPARAÇÃO DE ARQUITETURAS) ---
 let activeMetric = 'bw';
 
 const rawMetricData = {
     bw: {
-        nand: { width: '5%', label: '0.01 TB/s' },
-        nvme: { width: '15%', label: '0.014 TB/s' },
+        nand: { width: '7%', label: '0.0015 TB/s' },
+        nvme: { width: '14%', label: '0.0145 TB/s' },
         ddr5: { width: '40%', label: '0.08 TB/s' },
         hbm:  { width: '100%', label: '1.20+ TB/s' }
     },
     lat: {
         nand: { width: '10%', label: '50.000 ns (Lento)' },
-        nvme: { width: '20%', label: '10.000 ns' },
+        nvme: { width: '20%', label: '12.000 ns' },
         ddr5: { width: '90%', label: '80 ns' },
         hbm:  { width: '100%', label: '100 ns (Rápido)' }
     }
@@ -152,10 +167,12 @@ function triggerChartAnimation() {
     const fillDdr5 = document.getElementById('bar-ddr5');
     const fillHbm = document.getElementById('bar-hbm');
 
+    if(!fillNand) return;
+
     // Reseta visualmente a animação
     fillNand.style.width = '0%';
     fillNvme.style.width = '0%';
-    fillDdr5.style.width = '0%';
+    if(fillDdr5) fillDdr5.style.width = '0%';
     fillHbm.style.width = '0%';
 
     setTimeout(() => {
@@ -165,10 +182,79 @@ function triggerChartAnimation() {
         fillNvme.style.width = currentDataset.nvme.width;
         fillNvme.innerText = currentDataset.nvme.label;
 
-        fillDdr5.style.width = currentDataset.ddr5.width;
-        fillDdr5.innerText = currentDataset.ddr5.label;
+        if(fillDdr5) {
+            fillDdr5.style.width = currentDataset.ddr5.width;
+            fillDdr5.innerText = currentDataset.ddr5.label;
+        }
 
         fillHbm.style.width = currentDataset.hbm.width;
         fillHbm.innerText = currentDataset.hbm.label;
     }, 50);
+}
+
+
+// --- 4. LÓGICA DO SIMULADOR 3D (HBM TSV ELEVATOR) ---
+let hbmInterval = null;
+
+function startHbmElevatorAnimation() {
+    const scene = document.getElementById('hbm-scene');
+    if(!scene) return;
+    
+    stopHbmElevatorAnimation(); // Garante que não há loops duplicados
+
+    // Coordenadas X e Y que alinham com a torre HBM na nossa cena CSS
+    const tsvShafts = [
+        {x: 170, y: 40},
+        {x: 230, y: 40},
+        {x: 170, y: 90},
+        {x: 230, y: 90}
+    ];
+
+    hbmInterval = setInterval(() => {
+        // Pausa se não estiver no Slide 8 (Índice 7)
+        if (activeSlideIndex !== 7) return; 
+
+        const packet = document.createElement('div');
+        packet.className = 'data-packet-3d';
+        
+        // Escolhe um "poço de elevador" aleatório da torre HBM
+        const shaft = tsvShafts[Math.floor(Math.random() * tsvShafts.length)];
+
+        // Usa a API Web Animations para criar a viagem 3D
+        const animation = packet.animate([
+            // ETAPA 1: Nasce no topo da pilha DRAM (Z = 120px)
+            { transform: `translateX(${shaft.x}px) translateY(${shaft.y}px) translateZ(120px)`, opacity: 0, offset: 0 },
+            { transform: `translateX(${shaft.x}px) translateY(${shaft.y}px) translateZ(115px)`, opacity: 1, offset: 0.1 },
+            
+            // ETAPA 2: Desce pelo elevador TSV até à base Logic Die (Z = 15px)
+            { transform: `translateX(${shaft.x}px) translateY(${shaft.y}px) translateZ(15px)`, offset: 0.4 },
+            
+            // ETAPA 3: Viaja horizontalmente pelo Interposer até à borda da GPU
+            { transform: `translateX(120px) translateY(70px) translateZ(15px)`, offset: 0.6 },
+            
+            // ETAPA 4: Entra na GPU Core
+            { transform: `translateX(60px) translateY(70px) translateZ(15px)`, opacity: 1, offset: 0.9 },
+            { transform: `translateX(40px) translateY(70px) translateZ(15px)`, opacity: 0, offset: 1 }
+        ], {
+            duration: 1800 + Math.random() * 1000, 
+            easing: 'linear',
+            fill: 'forwards'
+        });
+
+        scene.appendChild(packet);
+
+        animation.onfinish = () => {
+            if(scene.contains(packet)) scene.removeChild(packet);
+        };
+
+    }, 250); 
+}
+
+function stopHbmElevatorAnimation() {
+    if(hbmInterval) clearInterval(hbmInterval);
+    const scene = document.getElementById('hbm-scene');
+    if(scene) {
+        const packets = scene.querySelectorAll('.data-packet-3d');
+        packets.forEach(p => scene.removeChild(p));
+    }
 }

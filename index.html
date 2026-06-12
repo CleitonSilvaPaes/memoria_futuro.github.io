@@ -195,19 +195,32 @@
                 <div>
                     <p>O <strong>HBM3/HBM3E</strong> resolve a lentidão de transferência fundindo computação e memória no mesmo encapsulamento.</p>
                     <ul>
-                        <li><strong>Empilhamento 3D via TSV:</strong> Chips DRAM perfurados por micro-fios de silício.</li>
-                        <li><strong>Interposer:</strong> A pilha não liga na placa-mãe, mas em uma base de silício ligada diretamente à GPU.</li>
+                        <li><strong>Empilhamento 3D via TSV:</strong> Chips DRAM perfurados por micro-fios de silício (funcionam como "elevadores" de dados).</li>
+                        <li><strong>Interposer:</strong> A via expressa na base de silício que conecta a torre de memória diretamente à GPU.</li>
                         <li><strong>Banda Massiva:</strong> Ultrapassa 1.2 TB/s por pilha, essencial para treinamento de IA (LLMs) que são limitados por memória (*Memory-Bound*).</li>
                     </ul>
                 </div>
-                <div class="tech-box-mock">
-                    <div class="hbm-stack-mock">
-                        <div class="hbm-base">Interposer</div>
-                        <div class="hbm-die">DRAM Core Die (Empilhado)</div>
-                        <div class="hbm-die">DRAM Core Die (Empilhado)</div>
-                    </div>
-                    <div style="display: flex; align-items: center; margin-top: 15px;">
-                        <div class="gpu-die">GPU / TPU (Ex: AMD MI300X)</div>
+                
+                <div class="interactive-widget" style="height: 450px; position: relative; overflow: hidden;">
+                    <h4 style="text-align: center; color: var(--accent); margin-bottom: 20px;">Tráfego TSV (Visão 3D)</h4>
+                    
+                    <div class="hbm-scene-container">
+                        <div class="hbm-scene" id="hbm-scene">
+                            <div class="layer layer-interposer">Interposer Base</div>
+                            
+                            <div class="layer layer-gpu">GPU Core</div>
+                            
+                            <div class="layer layer-hbm logic-die">Logic Die</div>
+                            <div class="layer layer-hbm dram-1">DRAM 1</div>
+                            <div class="layer layer-hbm dram-2">DRAM 2</div>
+                            <div class="layer layer-hbm dram-3">DRAM 3</div>
+                            <div class="layer layer-hbm dram-4">DRAM 4</div>
+
+                            <div class="tsv-pillar" style="left: 170px; top: 40px;"></div>
+                            <div class="tsv-pillar" style="left: 230px; top: 40px;"></div>
+                            <div class="tsv-pillar" style="left: 170px; top: 90px;"></div>
+                            <div class="tsv-pillar" style="left: 230px; top: 90px;"></div>
+                        </div>
                     </div>
                 </div>
             </div>
